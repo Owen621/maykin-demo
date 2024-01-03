@@ -1,9 +1,13 @@
 import csv
 from demo.models import Hotel, City
-from django.core.managenent.base import BaseCommand
+from django.core.management.base import BaseCommand
+from demo.forms import CityForm, HotelForm
 
 class Command(BaseCommand):
 
+
+    def handle(self, *args, **kwargs):
+        pass
     def importCities(file_path):
         with open(file_path, 'r') as file:
             reader = csv.DictReader(file)
@@ -22,9 +26,3 @@ class Command(BaseCommand):
                     hotelCode=row[1],
                     hotelName=row[2]
                 )
-
-    if __name__ == '__main__':
-        csv_city_file_path = 'city.csv'
-        csv_hotel_file_path = 'hotel.csv'
-        importCities(csv_city_file_path)
-        importHotels(csv_hotel_file_path)

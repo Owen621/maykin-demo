@@ -1,28 +1,43 @@
 import csv
 from demo.models import Hotel, City
+import requests
 from django.core.management.base import BaseCommand
 from demo.forms import CityForm, HotelForm
+from requests.auth import HTTPBasicAuth
 
 class Command(BaseCommand):
 
 
     def handle(self, *args, **kwargs):
-        pass
-    def importCities(file_path):
-        with open(file_path, 'r') as file:
-            reader = csv.DictReader(file)
-            for row in reader:
-                City.objects.create(
-                    cityCode=row[0],
-                    CityName=row[1],
-                )
+        self.main()
+    
+    def main(self):
 
-    def importHotels(file_path):
-        with open(file_path, 'r') as file:
-            reader = csv.DictReader(file)
-            for row in reader:
-                Hotel.objects.create(
-                    city=City.objects.filter(cityCode=row[0]),
-                    hotelCode=row[1],
-                    hotelName=row[2]
-                )
+        City.objects.all().delete()
+        Hotel.objects.all().delete()
+        
+        csv_city = 'http://rachel.maykinmedia.nl/djangocase/city.csv'
+        csv_hotel = 'http://rachel.maykinmedia.nl/djangocase/hotel.csv'
+        details = HTTPBasicAuth('python-demo', 'claw30_bumps')
+        response = [
+            requests.get(csv_city, auth=details),
+            requests.get(csv_hotel, auth=details),
+            ]
+        
+        
+        reader = csv.reader(response[0].text.splitlines(), delimiter=';')
+        for row in reader:
+            City.objects.create(
+                cityCode=row[0],
+                cityName=row[1],
+            )
+
+    
+        reader = csv.reader(response[1].text.splitlines(), delimiter=';')
+        for row in reader:
+            Hotel.objects.create(
+                city=City.objects.get(cityCode=row[0]),
+                hotelCode=row[1],
+                hotelName=row[2]
+            )
+        print("Done")

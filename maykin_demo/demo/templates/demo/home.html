@@ -1,5 +1,12 @@
 {% extends 'demo/base.html' %}
 
 {% block content %}
-<h1>home</h1>
+    <header><h1>home</h1></header>
+    <main id="home">
+        {% if empty %}
+            <h2>Empty</h2>
+        {% else %}
+            <h2>Not empty</h2>
+        {% endif %}
+    </main>
 {% endblock %}

@@ -4,6 +4,7 @@ from .models import Hotel, City
 
 # Create your views here.
 
+#test
 def home(request):
 
     citySelected = None

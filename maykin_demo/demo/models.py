@@ -1,5 +1,4 @@
 from django.db import models
-
 # Create your models here.
 
 class City (models.Model):
@@ -13,3 +12,4 @@ class Hotel (models.Model):
         City, blank=True, on_delete=models.CASCADE)
     hotelCode = models.CharField(max_length=10)
     hotelName = models.CharField(max_length=255)
+

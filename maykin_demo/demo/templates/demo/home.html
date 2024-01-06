@@ -1,12 +1,38 @@
 {% extends 'demo/base.html' %}
 
 {% block content %}
-    <header><h1>home</h1></header>
-    <main id="home">
-        {% if empty %}
-            <h2>Empty</h2>
+    {% if empty %}
+        <h2>No data has been imported</h2>
+    {% else %}
+        {% if citySelected != None %}
+            <header><h1>{{citySelected.cityName}}</h1></header>
+            <main id="home">
+                {% if hotels|length == 0 %}
+                    <h2>Sorry we could not find any hotels in {{citySelected.cityName}}</h2>
+                {% else %}
+                    {% for hotel in hotels %}
+                        <li>{{hotel.hotelCode}} : {{hotel.hotelName}}</li>
+                        <br>
+                    {% endfor %}
+                {% endif %}
+            </main>
         {% else %}
-            <h2>Not empty</h2>
+            <header><h1>Welcome to hotel finder</h1></header>
+            <main id="home">
+                <p>A program written by Owen Freeman as a test project for Maykin Media</p>
+                <p>Management command written to import data of hotels and cities over authenticated HTTP</p>
+                <p>User can select these cities and view the respective hotels</p>
+            </main>
         {% endif %}
-    </main>
+
+
+        <div class="sidenav">
+            <a href="/home">Home</a>
+            {% for city in cities %}
+                <br>
+                <a href="/home?{{city.cityName}}">{{city.cityName}}</a>   
+            {% endfor %} 
+        </div>
+
+    {% endif %}
 {% endblock %}

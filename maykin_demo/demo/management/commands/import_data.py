@@ -7,8 +7,11 @@ from requests.auth import HTTPBasicAuth
 
 class Command(BaseCommand):
 
+    help = ("Imports data on hotels and cities over authenticated HTTP into hotel and city models respetively")
 
     def handle(self, *args, **kwargs):
+        
+        print("Starting import")
         self.main()
     
     def main(self):

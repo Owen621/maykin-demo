@@ -2,7 +2,6 @@ import csv
 from demo.models import Hotel, City
 import requests
 from django.core.management.base import BaseCommand
-from demo.forms import CityForm, HotelForm
 from requests.auth import HTTPBasicAuth
 
 class Command(BaseCommand):
@@ -10,7 +9,7 @@ class Command(BaseCommand):
     help = ("Imports data on hotels and cities over authenticated HTTP into hotel and city models respetively")
 
     def handle(self, *args, **kwargs):
-        
+
         print("Starting import")
         self.main()
     

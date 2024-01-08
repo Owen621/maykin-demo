@@ -6,7 +6,10 @@
         <meta charset="utf-8">
         <style>
 
-            .sidenav {
+            body {
+                margin-top: 0;
+            }
+            .side-nav {
                 height:100%;
                 width:175px;
                 position: fixed;
@@ -18,7 +21,7 @@
                 padding-top:20px;
             }
 
-            .sidenav a {
+            .side-nav a {
                 padding:5px 10px 5px 10px;
                 text-decoration:none;
                 font-size:28px;
@@ -26,27 +29,74 @@
                 display:block;
             }
 
-            .sidenav a:hover{
+            .side-nav a:hover{
                 color:#f1f1f1
             }
 
             .main{
                 margin-left:175px;
                 padding: 0px 10px;
-                text-align: center;
             }
 
-            #home{
+            .home{
                 margin-top: 50px;
             }
 
-            #home>li {
+            .home>li {
                 list-style: none;
             }
+
+            .all {
+                text-align: center;
+            }
+
+            nav{
+                display: flex;
+                padding-right: 5%;
+                justify-content: space-between;
+                align-items: center;
+                background-color:#aadae9;
+            }
+            .nav-links{
+                flex: 1;
+                text-align: right;
+            }
+            .nav-links ul li{
+                list-style: none;
+                display: inline-block;
+                padding: 8px 12px;
+                position: relative;
+            }
+            .nav-links ul li a{
+                color: #000000;
+                text-decoration: none;
+                font-size: 13px;
+            }
+
+            .nav-links ul li a:hover{
+                color: #ffffff
+            }
+
         </style>
     </head>
+    <nav>
+        <div class="nav-links">
+            <i class="fa fa-times"></i>
+            <ul>
+                <li><a href="/home">HOME</a></li>
+                {% if request.user.is_authenticated %}
+                    <li><a href="/edit">EDIT</a></li>
+                    <li><a href="/logout">LOGOUT</a></li>
+                {% else %}
+                    <li><a href="/register">REGISTER</a></li>
+                    <li><a href="/login">LOGIN</a></li>
+                {% endif %}
+            </ul>
+        </div>
+        <i class="fa fa-bars" aria-hidden="true"></i>
+    </nav>
     <body>
-        <div class="main">
+        <div class="all">
             {% block content %}
             {% endblock %}
         </div>

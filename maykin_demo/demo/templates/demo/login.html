@@ -1,0 +1,18 @@
+{% extends "demo/base.html" %}
+{% load crispy_forms_tags %}
+
+    
+
+{% block content %}
+	<h3 id="form-title">LOGIN</h3>		
+	<form method="POST" action="">
+		{% csrf_token %}	
+		<input type="text" name="username" placeholder="Username..." class="form-control">		
+		<input type="password" name="password" placeholder="Password..." class="form-control" >
+		<input class="btn login_btn" type="submit" value="Login">	   			
+	</form>
+    {% if failed %}
+        <p>Login failed, incorrect credentials</p>
+    {% endif %}
+    
+{% endblock %}

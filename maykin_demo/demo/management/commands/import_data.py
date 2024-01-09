@@ -14,10 +14,18 @@ class Command(BaseCommand):
         self.main()
     
     def main(self):
-
-        City.objects.all().delete()
-        Hotel.objects.all().delete()
         
+        '''
+        At first I assumed that this command will be overwriting the previous
+        data everyday. However this approach does not make sense for the
+        further bullet points in the task, due to the fact that Users are
+        created who can add, update and delete these hotels. This means that
+        this command will essentially overwrite all their work as well as
+        disrupting the relation between extended user and city, and so I have
+        adapted it to only add new records into the database. It is only a small
+        change and can easily be reverted anyway.
+        '''
+
         csv_city = 'http://rachel.maykinmedia.nl/djangocase/city.csv'
         csv_hotel = 'http://rachel.maykinmedia.nl/djangocase/hotel.csv'
         details = HTTPBasicAuth('python-demo', 'claw30_bumps')
@@ -29,17 +37,19 @@ class Command(BaseCommand):
         
         reader = csv.reader(response[0].text.splitlines(), delimiter=';')
         for row in reader:
-            City.objects.create(
-                cityCode=row[0],
-                cityName=row[1],
-            )
+            if len(City.objects.filter(cityCode=row[0])) == 0:
+                City.objects.create(
+                    cityCode=row[0],
+                    cityName=row[1],
+                )
 
     
         reader = csv.reader(response[1].text.splitlines(), delimiter=';')
         for row in reader:
-            Hotel.objects.create(
-                city=City.objects.get(cityCode=row[0]),
-                hotelCode=row[1],
-                hotelName=row[2]
-            )
+            if len(Hotel.objects.filter(hotelCode=row[1])) == 0:
+                Hotel.objects.create(
+                    city=City.objects.get(cityCode=row[0]),
+                    hotelCode=row[1],
+                    hotelName=row[2]
+                )
         print("Done")

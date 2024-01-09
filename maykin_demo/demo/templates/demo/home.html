@@ -1,7 +1,7 @@
 {% extends 'demo/base.html' %}
 
 {% block content %}
-    <div class="main">
+    <div class="home-wrap">
         {% if empty %}
             <h2>No data has been imported</h2>
         {% else %}
@@ -12,7 +12,7 @@
                         <h2>Sorry we could not find any hotels in {{citySelected.cityName}}</h2>
                     {% else %}
                         {% for hotel in hotels %}
-                            <li>{{hotel.hotelCode}} : {{hotel.hotelName}}</li>
+                            <li class="no-style">{{hotel.hotelCode}} : {{hotel.hotelName}}</li>
                             <br>
                         {% endfor %}
                     {% endif %}

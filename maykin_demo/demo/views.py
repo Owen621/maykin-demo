@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from .models import Hotel, City
+from .models import Hotel, City, ExtendedUser
 from .forms import RegisterForm, ExtendedUserForm
 from django.contrib.auth import login, authenticate
 from .decorators import authenticated_user, unauthenticated_user
@@ -17,12 +17,12 @@ def home(request):
             break
     
     if citySelected != None:
-        hotels = Hotel.objects.filter(city=citySelected)
+        hotels = Hotel.objects.filter(city=citySelected).order_by("hotelCode")
 
 
     context = {"empty": ((len(Hotel.objects.filter()) == 0) 
                          or (len(City.objects.filter()) == 0)),
-               "cities": City.objects.filter(),
+               "cities": City.objects.filter().order_by("cityName"),
                "citySelected": citySelected,
                "hotels": hotels}
     
@@ -73,5 +73,45 @@ def Userlogin(response):
 @authenticated_user
 def edit(response):
 
-    context = {}
+    deleted = False
+    noCity = False
+    form = None
+    hotels = []
+
+    if response.method == "POST":
+        form = ExtendedUserForm(
+            response.POST, instance=ExtendedUser.objects.get(user=response.user.id))
+        if form.is_valid():
+            form.save()
+    else:
+
+        if 'deleted' in response.GET:
+            deleted = True 
+
+        if ExtendedUser.objects.get(user=response.user.id).city == None:
+            form = ExtendedUserForm()
+            noCity = True
+        else:
+            hotels = Hotel.objects.filter(city=ExtendedUser.objects.get(
+                user=response.user.id).city).order_by("hotelCode")
+    
+        
+    context = {"form": form, "noCity": noCity, "hotels": hotels, "deleted": deleted}
     return render(response, "demo/edit.html", context)
+
+
+def deleteHotel(response, pk):
+    try:
+        hotel = Hotel.objects.get(id=pk)
+    except:
+        return redirect("/edit")
+    
+    if ExtendedUser.objects.get(user=response.user.id).city != hotel.city:
+        return redirect("/edit")
+        
+    if response.method == "POST":
+        hotel.delete()
+        return redirect("/edit?deleted")
+    
+    else:
+        return redirect("/edit")

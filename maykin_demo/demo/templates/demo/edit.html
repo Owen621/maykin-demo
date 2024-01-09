@@ -1,5 +1,36 @@
 {% extends 'demo/base.html' %}
+{% load crispy_forms_tags %}
 
 {% block content %}
     <header><h1>Edit</h1></header>
+
+
+    {% if noCity %}
+
+        <p>The city that you selected has been deleted. Please select a new city to manage</p>
+        <form method="POST" class="form-group">
+            {% csrf_token %}
+            {{form|crispy}}
+            <button type="submit" class="btn btn-success">Update</button>
+        </form>
+    {% else %}
+
+        {% if deleted %}
+            <p>Hotel deleted successfully</p>
+        {% endif %}
+        
+        {% for hotel in hotels %}
+            <div class="edit-list">
+                <li class="no-style">{{hotel.hotelCode}} : {{hotel.hotelName}}</li>
+                <p>hello</p>
+                <form action="{% url 'demo:delete-view' hotel.pk %}" method="post">
+                    {% csrf_token %}
+                    <input type="submit" value="Delete hotel">
+                </form>
+                <br>
+            </div>
+        {% endfor %}
+        
+    {% endif %}
+
 {% endblock %}

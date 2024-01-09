@@ -21,6 +21,6 @@ class Hotel (models.Model):
 class ExtendedUser(models.Model):
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+    #on_delete=models.SET_NULL is used
     city = models.ForeignKey(
-        City, blank=False, on_delete=models.CASCADE)
-    
+        City, null=True, on_delete=models.SET_NULL)

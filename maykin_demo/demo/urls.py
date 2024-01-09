@@ -1,4 +1,4 @@
-from .views import home, register, Userlogin, edit
+from .views import home, register, Userlogin, edit, deleteHotel
 from django.urls import path
 
 app_name = 'demo'
@@ -8,4 +8,6 @@ urlpatterns = [
     path('register', register, name="register-view"),
     path('login', Userlogin, name="login-view"),
     path('edit', edit, name="edit-view"),
+    path('delete/<int:pk>', deleteHotel, name="delete-view"),
+    
 ]

@@ -1,5 +1,6 @@
 from django.shortcuts import redirect
 
+#can be used with views to limited page access
 def authenticated_user(view_func):
     def wrapper_func(response, *args, **kwargs):
         if response.user.is_authenticated == False:

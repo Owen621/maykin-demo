@@ -5,6 +5,8 @@
         {% if empty %}
             <h2>No data has been imported</h2>
         {% else %}
+        <!--The city pages are actually just the home page. If no city has been selected then
+        the regular home page is displayed. Otherwise all the hotels are displayed in the selected city-->
             {% if citySelected != None %}
                 <header><h1>{{citySelected.cityName}}</h1></header>
                 <main class="home">

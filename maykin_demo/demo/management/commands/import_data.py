@@ -23,13 +23,14 @@ class Command(BaseCommand):
         created who can add, update and delete these hotels. This means that
         this command will essentially overwrite all their work as well as
         disrupting the relation between extended user and city, and so I have
-        adapted it to only add new records into the database. It is only a small
-        change and can easily be reverted anyway.
+        adapted it to only add new records into the database. This can easily
+        be reverted.
         '''
 
         csv_city = 'http://rachel.maykinmedia.nl/djangocase/city.csv'
         csv_hotel = 'http://rachel.maykinmedia.nl/djangocase/hotel.csv'
         details = HTTPBasicAuth('python-demo', 'claw30_bumps')
+        #connect to the link and return the files back to response
         response = [
             requests.get(csv_city, auth=details),
             requests.get(csv_hotel, auth=details),

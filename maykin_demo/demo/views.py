@@ -12,11 +12,13 @@ def home(request):
 
     citySelected = None
     hotels = []
+    #finds the relevant city
     for city in City.objects.filter():
         if city.cityName in request.GET:
             citySelected = city
             break
     
+    #orders the hotels to be displayed
     if citySelected != None:
         hotels = Hotel.objects.filter(city=citySelected).order_by("hotelCode")
 
@@ -30,6 +32,7 @@ def home(request):
     return render(request, 'demo/home.html', context)
 
 
+
 @unauthenticated_user
 def register(response):
     if response.method == "POST":
@@ -37,6 +40,7 @@ def register(response):
         extended_form = ExtendedUserForm(response.POST)
         if form.is_valid() and extended_form.is_valid():
             user = form.save()
+            #commit=False used to return the instance and not yet save to database
             extendedUserInstance = extended_form.save(commit=False)
             extendedUserInstance.user = user
             extendedUserInstance.save()
@@ -62,6 +66,7 @@ def Userlogin(response):
         password = response.POST.get('password')
 
         user = authenticate(response, username=username, password=password)
+        #the credentials are correct
         if user is not None:
             login(response, user)
             return redirect('/edit')
@@ -81,6 +86,7 @@ def edit(response):
     form = None
     hotels = []
 
+    #form for city has been submitted by user so extended user instance is updated
     if response.method == "POST":
         form = ExtendedUserForm(
             response.POST, instance=ExtendedUser.objects.get(user=response.user.id))
@@ -95,10 +101,12 @@ def edit(response):
         elif 'updated' in response.GET:
             updated = True
 
+        #the current user has no city so display the form
         if ExtendedUser.objects.get(user=response.user.id).city == None:
             form = ExtendedUserForm()
             noCity = True
         else:
+            #all hotels in the current users city
             hotels = Hotel.objects.filter(city=ExtendedUser.objects.get(
                 user=response.user.id).city).order_by("hotelCode")
     
@@ -107,7 +115,7 @@ def edit(response):
                 "deleted": deleted, "added": added, "updated": updated}
     return render(response, "demo/edit.html", context)
 
-
+#view is actioned as a POST request from other views to delete hotel object
 def deleteHotel(response, pk):
     try:
         hotel = Hotel.objects.get(id=pk)
@@ -124,6 +132,7 @@ def deleteHotel(response, pk):
     else:
         return redirect("/edit")
 
+
 @authenticated_user
 def hotelPage(response, slug=None):
 
@@ -138,10 +147,12 @@ def hotelPage(response, slug=None):
         except:
             raise Http404  
     
+    #users assinged to different cities can only access those hotels
     if ExtendedUser.objects.get(user=response.user.id).city != hotel.city:
         return redirect("/home")
     else:
         if response.method == "POST":
+            #pass in instance so that the record is updated rather than a new one created
             form = UpdateHotelForm(response.POST, instance=hotel)
             if form.is_valid():
                 form.save()
@@ -165,11 +176,15 @@ def add(response):
 
         form = NewHotelForm(response.POST)
         if form.is_valid():
+            #commit=false to change some more fields before saved
             hotel = form.save(commit=False)
             
+            #the city code is the same as the beginning of the hotel code
             if city.cityCode.lower() == hotel.hotelCode.lower()[:len(city.cityCode)]:
                 try:
+                    #the rest of the string is numbers
                     int(hotel.hotelCode[len(city.cityCode):])
+                    #no hotel exists with the same code
                     if len(Hotel.objects.filter(hotelCode=hotel.hotelCode.upper()))==0:
                         hotel.hotelCode = hotel.hotelCode.upper()
                         hotel.city = city

@@ -1,0 +1,18 @@
+{% extends "demo/base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+    <header><h1>{{hotel}}</h1></header>
+    
+    <form method="POST" class="form-group">
+        {% csrf_token %}
+        {{form|crispy}}
+        <button type="submit" class="btn btn-success">Update</button>
+    </form>
+    <br>
+    <form action="{% url 'demo:delete-view' hotel.pk %}" method="post">
+        {% csrf_token %}
+        <input type="submit" value="Delete hotel">
+    </form>
+    
+{% endblock %}

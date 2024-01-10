@@ -92,6 +92,7 @@
                 <li><a href="/home">HOME</a></li>
                 {% if request.user.is_authenticated %}
                     <li><a href="/edit">EDIT</a></li>
+                    <li><a href="/add">ADD</a></li>
                     <li><a href="/logout">LOGOUT</a></li>
                 {% else %}
                     <li><a href="/register">REGISTER</a></li>

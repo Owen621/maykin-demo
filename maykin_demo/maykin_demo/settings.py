@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'demo.apps.DemoConfig',
     "crispy_forms",
+    'django_crontab',
 ]
 
 MIDDLEWARE = [
@@ -129,3 +130,10 @@ LOGOUT_REDIRECT_URL = "/home"
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+'''
+CRONJOBS = [
+    ('0 12 * * * *', 'demo.cron.management.commands.import_data')
+]'''
+
+#I am using a windows device so unfortunately django-cron does not work but
+#otherwise this is how I would have made one

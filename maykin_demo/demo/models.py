@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils.text import slugify
+import uuid
 # Create your models here.
 
 class City (models.Model):
@@ -12,10 +14,21 @@ class City (models.Model):
 
 class Hotel (models.Model):
 
+    slug = models.SlugField(max_length=100, unique=True)
     city = models.ForeignKey(
         City, blank=True, on_delete=models.CASCADE)
     hotelCode = models.CharField(max_length=10)
     hotelName = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.hotelName
+    
+    def save(self, *args, **kwargs):
+        value = self.hotelCode
+        self.slug = slugify(value)
+        super().save(*args, **kwargs)
+
+
 
 
 class ExtendedUser(models.Model):

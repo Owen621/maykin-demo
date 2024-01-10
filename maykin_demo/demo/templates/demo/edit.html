@@ -17,16 +17,17 @@
 
         {% if deleted %}
             <p>Hotel deleted successfully</p>
+        {% elif added %}
+            <p>Hotel added successfully</p>
+        {% elif updated %}
+            <p>Hotel updated successfully</p>
         {% endif %}
         
         {% for hotel in hotels %}
             <div class="edit-list">
                 <li class="no-style">{{hotel.hotelCode}} : {{hotel.hotelName}}</li>
-                <p>hello</p>
-                <form action="{% url 'demo:delete-view' hotel.pk %}" method="post">
-                    {% csrf_token %}
-                    <input type="submit" value="Delete hotel">
-                </form>
+                <a href="/{{hotel.hotelCode.lower}}">Update</a>
+                <br>
                 <br>
             </div>
         {% endfor %}

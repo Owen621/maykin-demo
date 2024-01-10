@@ -1,9 +1,10 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from .models import Hotel, City, ExtendedUser
-from .forms import RegisterForm, ExtendedUserForm
+from .forms import RegisterForm, ExtendedUserForm, NewHotelForm, UpdateHotelForm
 from django.contrib.auth import login, authenticate
 from .decorators import authenticated_user, unauthenticated_user
+from django.http import Http404
 
 # Create your views here.
 
@@ -73,6 +74,8 @@ def Userlogin(response):
 @authenticated_user
 def edit(response):
 
+    updated = False
+    added = False
     deleted = False
     noCity = False
     form = None
@@ -87,6 +90,10 @@ def edit(response):
 
         if 'deleted' in response.GET:
             deleted = True 
+        elif 'added' in response.GET:
+            added = True
+        elif 'updated' in response.GET:
+            updated = True
 
         if ExtendedUser.objects.get(user=response.user.id).city == None:
             form = ExtendedUserForm()
@@ -96,7 +103,8 @@ def edit(response):
                 user=response.user.id).city).order_by("hotelCode")
     
         
-    context = {"form": form, "noCity": noCity, "hotels": hotels, "deleted": deleted}
+    context = {"form": form, "noCity": noCity, "hotels": hotels,
+                "deleted": deleted, "added": added, "updated": updated}
     return render(response, "demo/edit.html", context)
 
 
@@ -115,3 +123,67 @@ def deleteHotel(response, pk):
     
     else:
         return redirect("/edit")
+
+@authenticated_user
+def hotelPage(response, slug=None):
+
+    hotel = None
+    if slug is not None:
+        try:
+            hotel = Hotel.objects.get(slug=slug)
+        except Hotel.DoesNotExist:
+            raise Http404
+        except Hotel.MultipleObjectsReturned:
+           hotel = Hotel.objects.filter(slug=slug).first()
+        except:
+            raise Http404  
+    
+    if ExtendedUser.objects.get(user=response.user.id).city != hotel.city:
+        return redirect("/home")
+    else:
+        if response.method == "POST":
+            form = UpdateHotelForm(response.POST, instance=hotel)
+            if form.is_valid():
+                form.save()
+                return redirect("/edit?updated")
+        else:
+            form = UpdateHotelForm()
+
+
+    context = {"hotel": hotel, "form": form}
+
+    return render(response, "demo/hotel.html", context)
+
+@authenticated_user
+def add(response):
+
+    city = ExtendedUser.objects.get(user=response.user.id).city
+    invalid = False
+    exist = False
+
+    if response.method == "POST":
+
+        form = NewHotelForm(response.POST)
+        if form.is_valid():
+            hotel = form.save(commit=False)
+            
+            if city.cityCode.lower() == hotel.hotelCode.lower()[:len(city.cityCode)]:
+                try:
+                    int(hotel.hotelCode[len(city.cityCode):])
+                    if len(Hotel.objects.filter(hotelCode=hotel.hotelCode.upper()))==0:
+                        hotel.hotelCode = hotel.hotelCode.upper()
+                        hotel.city = city
+                        hotel.save()
+                        return redirect("/edit?added")
+                    else:
+                        exist = True
+                except ValueError:
+                    invalid = True
+            else:
+                invalid = True
+    else:
+        form = NewHotelForm()
+    
+    context = {"form": form, "city": city, "invalid": invalid, "exist": exist}
+    return render(response, "demo/add.html", context)
+            

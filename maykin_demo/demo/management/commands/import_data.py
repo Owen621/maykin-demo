@@ -4,6 +4,7 @@ import requests
 from django.core.management.base import BaseCommand
 from requests.auth import HTTPBasicAuth
 
+#I cannot use django-cron in windows
 class Command(BaseCommand):
 
     help = ("Imports data on hotels and cities over authenticated HTTP into hotel and city models respetively")
@@ -37,6 +38,7 @@ class Command(BaseCommand):
         
         reader = csv.reader(response[0].text.splitlines(), delimiter=';')
         for row in reader:
+            #if this city does not already exist in the database
             if len(City.objects.filter(cityCode=row[0])) == 0:
                 City.objects.create(
                     cityCode=row[0],

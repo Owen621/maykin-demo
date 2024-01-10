@@ -1,6 +1,6 @@
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import ExtendedUser
+from .models import ExtendedUser, Hotel
 from django.forms import ModelForm
 
 class RegisterForm(UserCreationForm):
@@ -14,4 +14,14 @@ class ExtendedUserForm(ModelForm):
         model = ExtendedUser
         fields = ['city']
 
-        
+class UpdateHotelForm(ModelForm):
+
+    class Meta:
+        model = Hotel
+        fields = ['hotelName']
+
+class NewHotelForm(ModelForm):
+
+    class Meta:
+        model = Hotel
+        fields = ['hotelCode', 'hotelName']

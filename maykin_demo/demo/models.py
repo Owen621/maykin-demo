@@ -9,6 +9,8 @@ class City (models.Model):
     cityCode = models.CharField(max_length=3)
     cityName = models.CharField(max_length=255)
 
+    #useful for displaying the actual city names on the forms
+    #rather than city object (1) etc
     def __str__(self):
         return self.cityName
 

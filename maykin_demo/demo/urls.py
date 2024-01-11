@@ -1,4 +1,4 @@
-from .views import home, register, Userlogin, edit, deleteHotel, hotelPage, add
+from .views import *
 from django.urls import path
 
 app_name = 'demo'

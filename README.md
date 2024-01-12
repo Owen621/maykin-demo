@@ -3,7 +3,7 @@ Maykin Media Test
 Requirements:
 Install Python 3.8 or newer and make sure to select to install pip as well - https://www.python.org/downloads/
 
-You will need to type **pip install packagename** for the following
+You will need to type **pip install packagename** in the command prompt for the following
 If this does not work try **python -m pip install packagename**
 
 django --> https://www.djangoproject.com/
